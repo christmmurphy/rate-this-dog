@@ -24,7 +24,7 @@ def getDoggo
 end
 
 get '/' do
-  "Bark bark bark"
+  "Bark bark bork"
 end
 
 
