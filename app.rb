@@ -1,7 +1,7 @@
-require 'json'
-require 'sinatra'
-require 'net/http'
-require 'intercom'
+require "json"
+require "sinatra"
+require "net/http"
+require "intercom"
 
 intercom = Intercom::Client.new(token: ENV['token'])
 
