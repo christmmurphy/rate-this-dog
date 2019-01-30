@@ -2,7 +2,16 @@ require 'json'
 require 'sinatra'
 require 'net/http'
 
-endpoint = "https://949b4bab.ngrok.io"
+intercom = Intercom::Client.new(token: ENV['token'])
+
+def postEvent
+  intercom.events.create(
+  event_name: "rated-dog",
+  id: "5c511c48bdc056728763aa5e",
+  metadata: {
+    "rated-dog" => "yes"
+  })
+end
 
 def getDoggo
   url = "https://dog.ceo/api/breeds/image/random"
@@ -23,10 +32,10 @@ post '/submit' do
   doggo = getDoggo
   puts doggo
   puts "=========================== ~~~~~~~~~~~~  POST SUBMIT  ~~~~~~~~~~~~ ==========================="
-  button = "{\"canvas\":{\"content\":{\"components\":[{\"id\":\"dog\",\"type\":\"image\",\"url\":\"#{doggo}\",\"align\":\"left\",\"width\":340,\"height\":240,\"rounded\":false},{\"id\":\"4a3a1733e96442b0fcc38d2c4f2c\",\"type\":\"single-select\",\"label\":\ null,\"value\":\"3e0820c0e0af9cb653dbf1ae2752\",\"save_state\":\"unsaved\",\"options\":[{\"id\":\"3e0820c0e0af9cb653dbf1ae2752\",\"type\":\"option\",\"text\":\"😁 Good Boy\"},{\"id\":\"a2ae157c6b9878b363aee397590a\",\"type\":\"option\",\"text\":\"😍 Great Boy\"}],\"action\":{\"type\":\"submit\"}}]},\"stored_data\":{}}}"
+  button = "{\"canvas\":{\"content\":{\"components\":[{\"id\":\"dog\",\"type\":\"image\",\"url\":\"#{doggo}\",\"align\":\"left\",\"width\":340,\"height\":240,\"rounded\":false},{\"id\":\"4a3a1733e96442b0fcc38d2c4f2c\",\"type\":\"single-select\",\"label\":\ null,\"value\":\"3e0820c0e0af9cb653dbf1ae2752\",\"save_state\":\"unsaved\",\"options\":[{\"id\":\"3e0820c0e0af9cb653dbf1ae2752\",\"type\":\"option\",\"text\":\"Good Boy\"},{\"id\":\"a2ae157c6b9878b363aee397590a\",\"type\":\"option\",\"text\":\"Great Boy\"}],\"action\":{\"type\":\"submit\"}}]},\"stored_data\":{}}}"
   button.to_json
   puts button
-  button
+  postEvent
 end
 
 # Endpoint that's hit when the messenger app is loaded in the messenger.
@@ -76,6 +85,6 @@ post'/' do
 end
 
 post '/goodboy' do
-  puts "wags tail 🐶"
-  response = '{"canvas":{"content":{"components":[{"id":"welcome-link","type":"image","url":"https://downloads.intercomcdn.com/i/o/86160844/0f0f53fbdb1c741e2f7bca83/link.jpg","align":"center","width":"130","height":"130","rounded":true},{"id":"get-started","type":"button","label":"Rate This Dog 😍","style":"primary","action":{"type":"submit","url":null},"bottom_margin":false}]},"stored_data":{}}}'
+  puts "*wags tail*"
+  response = '{"canvas":{"content":{"components":[{"id":"welcome-link","type":"image","url":"https://downloads.intercomcdn.com/i/o/86160844/0f0f53fbdb1c741e2f7bca83/link.jpg","align":"center","width":"130","height":"130","rounded":true},{"id":"get-started","type":"button","label":"Rate This Dog!","style":"primary","action":{"type":"submit","url":null},"bottom_margin":false}]},"stored_data":{}}}'
 end
