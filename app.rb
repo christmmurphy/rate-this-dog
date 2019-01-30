@@ -3,9 +3,8 @@ require "sinatra"
 require "net/http"
 require "intercom"
 
-intercom = Intercom::Client.new(token: ENV['token'])
-
 def postEvent
+  intercom = Intercom::Client.new(token: ENV['token'])
   intercom.events.create(
   event_name: "rated-dog",
   id: "5c511c48bdc056728763aa5e",
