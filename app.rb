@@ -8,10 +8,13 @@ def postEvent
   intercom.events.create(
   event_name: "rated-dog",
   id: "5c511c48bdc056728763aa5e",
+  created_at: Time.now,
   metadata: {
     "rated-dog" => "yes"
   })
 end
+
+
 
 def getDoggo
   url = "https://dog.ceo/api/breeds/image/random"
