@@ -1,8 +1,7 @@
 require 'json'
 require 'sinatra'
 require 'net/http'
-require 'intercom'
-
+require "Intercom"
 intercom = Intercom::Client.new(token: ENV['token'])
 
 def postEvent
