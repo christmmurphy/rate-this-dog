@@ -3,18 +3,7 @@ require "sinatra"
 require "net/http"
 require "intercom"
 
-def postEvent
-  intercom = Intercom::Client.new(token: ENV['token'])
-  intercom.events.create(
-  event_name: "rated-dog",
-  id: "5c511c48bdc056728763aa5e",
-  created_at: Time.now,
-  metadata: {
-    "rated-dog" => "yes"
-  })
-end
-
-
+intercom = Intercom::Client.new(token: 'dG9rOjA0ZjZkMzA4XzUxMzJfNDczMl84Y2M4Xzg2ZGZmNWY2NGMwYToxOjA=')
 
 def getDoggo
   url = "https://dog.ceo/api/breeds/image/random"
@@ -33,11 +22,18 @@ end
 post '/submit' do
   content_type 'application/json'
   doggo = getDoggo
-  puts doggo
   puts "=========================== ~~~~~~~~~~~~  POST SUBMIT  ~~~~~~~~~~~~ ==========================="
   button = "{\"canvas\":{\"content\":{\"components\":[{\"id\":\"dog\",\"type\":\"image\",\"url\":\"#{doggo}\",\"align\":\"left\",\"width\":340,\"height\":240,\"rounded\":false},{\"id\":\"4a3a1733e96442b0fcc38d2c4f2c\",\"type\":\"single-select\",\"label\":\ null,\"value\":\"3e0820c0e0af9cb653dbf1ae2752\",\"save_state\":\"unsaved\",\"options\":[{\"id\":\"3e0820c0e0af9cb653dbf1ae2752\",\"type\":\"option\",\"text\":\"Good Boy\"},{\"id\":\"a2ae157c6b9878b363aee397590a\",\"type\":\"option\",\"text\":\"Great Boy\"}],\"action\":{\"type\":\"submit\"}}]},\"stored_data\":{}}}"
-  button.to_json
-  puts button
+  button
+
+  intercom.events.create(
+  event_name: "rated-dog",
+  created_at: Time.now.to_i,
+  id: response["user"]["id"],
+  metadata: {
+    "invitee_email" => "pi@example.org"
+  })
+
 end
 
 # Endpoint that's hit when the messenger app is loaded in the messenger.
