@@ -36,7 +36,7 @@ post '/submit' do # When a user presses a button in your app, return a card
   # Store Event for the person interacting w/ the card
   intercom_id = response_from_messenger["user"]["id"]
   puts intercom_id
-  if intercom_id.nul?
+  if intercom_id.nil?
     puts "no id value"
   else
     intercom.events.create(
