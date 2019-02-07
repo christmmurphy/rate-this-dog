@@ -35,15 +35,18 @@ post '/submit' do # When a user presses a button in your app, return a card
 
   # Store Event for the person interacting w/ the card
   intercom_id = response_from_messenger["user"]["id"]
-  
-  if ( intercom_id != null) {
-    intercom.events.create(
-    event_name: "rated-dog",
-    created_at: Time.now.to_i,
-    id: response_from_messenger["user"]["id"], # grab their ID value from webhook
-    metadata: {
-      "dog:" => response_from_messenger["current_canvas"]["content"]["components"][0]["url"]
-    })
+
+if intercom_id.nil?
+  puts "no id value"
+else
+  intercom.events.create(
+  event_name: "rated-dog",
+  created_at: Time.now.to_i,
+  id: response_from_messenger["user"]["id"], # grab their ID value from webhook
+  metadata: {
+    "dog:" => response_from_messenger["current_canvas"]["content"]["components"][0]["url"]
+  })
+
 }
 
   # Return the new card
