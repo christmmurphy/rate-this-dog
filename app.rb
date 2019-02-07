@@ -1,88 +1,47 @@
 require "json"
 require "sinatra"
-require "net/http"
 require "intercom"
 
-intercom = Intercom::Client.new(token: 'dG9rOjA0ZjZkMzA4XzUxMzJfNDczMl84Y2M4Xzg2ZGZmNWY2NGMwYToxOjA=')
+# Useful tools for manipulating JSON
+## https://codebeautify.org/jsonminifier
+## https://codebeautify.org/javascript-escape-unescape
 
-def getDoggo
+# Create an Intercom client to make REST API calls
+access_token = ENV['TOKEN']
+intercom = Intercom::Client.new(token: access_token)
+
+post'/' do # Send default state of the card when the app is first loaded by the messenger
+  rateThisDogHomeCard = "{\"canvas\":{\"content\":{\"components\":[{\"id\":\"rate-this-dog-header\",\"type\":\"text\",\"text\":\"Rate This Dog\",\"style\":\"header\",\"align\":\"center\",\"bottom_margin\":false},{\"id\":\"welcome-link\",\"type\":\"image\",\"url\":\"https://downloads.intercomcdn.com/i/o/86160844/0f0f53fbdb1c741e2f7bca83/link.jpg\",\"align\":\"center\",\"width\":130,\"height\":130,\"rounded\":true},{\"id\":\"b57a7c7047a3674d6876063a2e3a\",\"type\":\"button\",\"label\":\"Start Rating\",\"style\":\"primary\",\"action\":{\"type\":\"submit\",\"url\":null},\"bottom_margin\":false}]},\"stored_data\":{}}}"
+  rateThisDogHomeCard # Return the card
+end
+
+# Ping another API to grab an image url
+def fetchImage
   url = "https://dog.ceo/api/breeds/image/random"
   uri = URI(url)
   response = Net::HTTP.get(uri)
-  dogUrl = JSON.parse(response)
-  puts "hey here's the packet:"+dogUrl["message"]
-  output = dogUrl["message"]
+  imgURL = JSON.parse(response)
+  output = imgURL["message"]
 end
 
-get '/' do
-  "Bark bark bork"
-end
+post '/submit' do # When a user presses a button in your app, return a card
+  button1 = "Good Boy" # Variable for voting button
+  button2 = "Great Boy" # Variable for voting button
+  image = fetchImage # Pull a new image using the function above
+  response_from_messenger = JSON.parse(request.body.read) # Store the webhook fired on submission
 
+  # Send a new card to the messenger including some of our variables
+  votingCard = "{\"canvas\":{\"content\":{\"components\":[{\"id\":\"dog\",\"type\":\"image\",\"url\":\"#{image}\",\"align\":\"left\",\"width\":340,\"height\":240,\"rounded\":false},{\"id\":\"votingSelection\",\"type\":\"single-select\",\"label\":\ null,\"value\":\"3e0820c0e0af9cb653dbf1ae2752\",\"save_state\":\"unsaved\",\"options\":[{\"id\":\"3e0820c0e0af9cb653dbf1ae2752\",\"type\":\"option\",\"text\":\"#{button1}\"},{\"id\":\"a2ae157c6b9878b363aee397590a\",\"type\":\"option\",\"text\":\"#{button2}\"}],\"action\":{\"type\":\"submit\"}}]},\"stored_data\":{}}}"
 
-post '/submit' do
-  content_type 'application/json'
-  doggo = getDoggo
-  puts "=========================== ~~~~~~~~~~~~  POST SUBMIT  ~~~~~~~~~~~~ ==========================="
-  button = "{\"canvas\":{\"content\":{\"components\":[{\"id\":\"dog\",\"type\":\"image\",\"url\":\"#{doggo}\",\"align\":\"left\",\"width\":340,\"height\":240,\"rounded\":false},{\"id\":\"4a3a1733e96442b0fcc38d2c4f2c\",\"type\":\"single-select\",\"label\":\ null,\"value\":\"3e0820c0e0af9cb653dbf1ae2752\",\"save_state\":\"unsaved\",\"options\":[{\"id\":\"3e0820c0e0af9cb653dbf1ae2752\",\"type\":\"option\",\"text\":\"Good Boy\"},{\"id\":\"a2ae157c6b9878b363aee397590a\",\"type\":\"option\",\"text\":\"Great Boy\"}],\"action\":{\"type\":\"submit\"}}]},\"stored_data\":{}}}"
-  button
-
+  # Store Event for the person interacting w/ the card
   intercom.events.create(
   event_name: "rated-dog",
   created_at: Time.now.to_i,
-  id: response["user"]["id"],
+  id: response_from_messenger["user"]["id"], # grab their ID value from webhook
   metadata: {
-    "invitee_email" => "pi@example.org"
+    "dog:" => response_from_messenger["current_canvas"]["content"]["components"][0]["url"]
   })
 
-end
-
-# Endpoint that's hit when the messenger app is loaded in the messenger.
-post'/' do
-  puts "=========================== ~~~~~~~~~~~~  GET  ~~~~~~~~~~~~ ==========================="
-  content_type 'application/json'
-  puts response.inspect
-  response = '{
-      "canvas": {
-        "content": {
-          "components": [
-              {
-               "id": "rate-this-dog-header",
-               "type": "text",
-               "text": "Rate This Dog",
-               "style": "header",
-               "align": "center",
-               "bottom_margin": false
-             },
-            {
-              "id": "welcome-link",
-              "type": "image",
-              "url": "https://downloads.intercomcdn.com/i/o/86160844/0f0f53fbdb1c741e2f7bca83/link.jpg",
-              "align": "center",
-              "width": 130,
-              "height": 130,
-              "rounded": true
-            },
-            {
-              "id": "b57a7c7047a3674d6876063a2e3a",
-              "type": "button",
-              "label": "Start Rating",
-              "style": "primary",
-              "action": {
-                "type": "submit",
-                "url": null
-              },
-              "bottom_margin": false
-            }
-          ]
-        },
-        "stored_data": {}
-      }
-    }'
-  response.to_json
-  response
-end
-
-post '/goodboy' do
-  puts "*wags tail*"
-  response = '{"canvas":{"content":{"components":[{"id":"welcome-link","type":"image","url":"https://downloads.intercomcdn.com/i/o/86160844/0f0f53fbdb1c741e2f7bca83/link.jpg","align":"center","width":"130","height":"130","rounded":true},{"id":"get-started","type":"button","label":"Rate This Dog!","style":"primary","action":{"type":"submit","url":null},"bottom_margin":false}]},"stored_data":{}}}'
+  # Return the new card
+  votingCard
 end
