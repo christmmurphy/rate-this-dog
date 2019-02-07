@@ -46,7 +46,6 @@ post '/submit' do # When a user presses a button in your app, return a card
     metadata: {
       "dog:" => response_from_messenger["current_canvas"]["content"]["components"][0]["url"]
     })
-  }
   end
   # Return the new card
   votingCard
