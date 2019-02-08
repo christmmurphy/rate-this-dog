@@ -48,10 +48,6 @@ post '/submit' do # When a user presses a button in your app, return a card
     "dog:" => response_from_messenger["current_canvas"]["content"]["components"][0]["url"]
   })
 
-
-  puts "======================================================"
-  puts "Here's the #{intercom_id}"
-  puts "======================================================"
   # if intercom_id.nil?
   #   puts "no id value"
   # else
