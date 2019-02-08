@@ -35,7 +35,7 @@ post '/submit' do # When a user presses a button in your app, return a card
 
   puts "======================================================"
   isvote = response_from_messenger["current_canvas"]["content"]["id"]
-  puts isvote
+  puts "here is the id value: #{isvote}"
   puts "======================================================"
 
 
