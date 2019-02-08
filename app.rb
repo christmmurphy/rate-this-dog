@@ -33,6 +33,11 @@ post '/submit' do # When a user presses a button in your app, return a card
   # Send a new card to the messenger including some of our variables
   votingCard = "{\"canvas\":{\"content\":{\"components\":[{\"id\":\"dog\",\"type\":\"image\",\"url\":\"#{image}\",\"align\":\"left\",\"width\":340,\"height\":240,\"rounded\":false},{\"id\":\"votingSelection\",\"type\":\"single-select\",\"label\":\ null,\"value\":\"3e0820c0e0af9cb653dbf1ae2752\",\"save_state\":\"unsaved\",\"options\":[{\"id\":\"3e0820c0e0af9cb653dbf1ae2752\",\"type\":\"option\",\"text\":\"#{button1}\"},{\"id\":\"a2ae157c6b9878b363aee397590a\",\"type\":\"option\",\"text\":\"#{button2}\"}],\"action\":{\"type\":\"submit\"}}]},\"stored_data\":{}}}"
 
+  puts "======================================================"
+  isvote = ["current_canvas"]["content"]["components"]["id"]
+  puts "======================================================"
+
+
   # Store Event for the person interacting w/ the card
   # intercom_id = response_from_messenger["user"]["id"]
   # puts intercom_id
