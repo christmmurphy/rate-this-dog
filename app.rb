@@ -33,7 +33,7 @@ post '/submit' do # When a user presses a button in your app, return a card
   intercom.events.create(
   event_name: "rated-dog",
   created_at: Time.now.to_i,
-  id: response_from_messenger["user"]["id"], # grab their ID value from webhook
+  intercom_user_id: response_from_messenger["user"]["id"], # grab their ID value from webhook
   metadata: {
     "dog:" => response_from_messenger["current_canvas"]["content"]["components"][0]["url"]
   })
