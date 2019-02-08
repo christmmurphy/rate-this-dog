@@ -55,7 +55,6 @@ post '/submit' do # When a user presses a button in your app, return a card
     metadata: {
       "dog:" => response_from_messenger["current_canvas"]["content"]["components"][0]["url"]
     })
-  end
   # 2019-02-07T02:53:09.524320+00:00 app[web.1]: 2019-02-07 02:53:09 - Intercom::ResourceNotFound - User Not Found:
   # 2019-02-07T02:53:09.524358+00:00 app[web.1]: 	/app/vendor/bundle/ruby/2.4.0/gems/intercom-3.7.3/lib/intercom/request.rb:170:in `raise_application_errors_on_failure'
 
