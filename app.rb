@@ -58,6 +58,4 @@ post '/submit' do # When a user presses a button in your app, return a card
 
   # Return the new card
   votingCard
-
-
 end
