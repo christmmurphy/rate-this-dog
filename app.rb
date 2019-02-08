@@ -30,6 +30,14 @@ post '/submit' do # When a user presses a button in your app, return a card
   image = fetchImage # Pull a new image using the function above
   response_from_messenger = JSON.parse(request.body.read) # Store the webhook fired on submission
 
+  intercom.events.create(
+  event_name: "rated-dog",
+  created_at: Time.now.to_i,
+  id: response_from_messenger["user"]["id"], # grab their ID value from webhook
+  metadata: {
+    "dog:" => response_from_messenger["current_canvas"]["content"]["components"][0]["url"]
+  })
+
   # Send a new card to the messenger including some of our variables
   votingCard = "{\"canvas\":{\"content\":{\"components\":[{\"id\":\"dog\",\"type\":\"image\",\"url\":\"#{image}\",\"align\":\"left\",\"width\":340,\"height\":240,\"rounded\":false},{\"id\":\"votingSelection\",\"type\":\"single-select\",\"label\":\ null,\"value\":\"3e0820c0e0af9cb653dbf1ae2752\",\"save_state\":\"unsaved\",\"options\":[{\"id\":\"3e0820c0e0af9cb653dbf1ae2752\",\"type\":\"option\",\"text\":\"#{button1}\"},{\"id\":\"a2ae157c6b9878b363aee397590a\",\"type\":\"option\",\"text\":\"#{button2}\"}],\"action\":{\"type\":\"submit\"}}]},\"stored_data\":{}}}"
 
@@ -48,13 +56,7 @@ post '/submit' do # When a user presses a button in your app, return a card
   # if intercom_id.nil?
   #   puts "no id value"
   # else
-    intercom.events.create(
-    event_name: "rated-dog",
-    created_at: Time.now.to_i,
-    id: response_from_messenger["user"]["id"], # grab their ID value from webhook
-    metadata: {
-      "dog:" => response_from_messenger["current_canvas"]["content"]["components"][0]["url"]
-    })
+
   # 2019-02-07T02:53:09.524320+00:00 app[web.1]: 2019-02-07 02:53:09 - Intercom::ResourceNotFound - User Not Found:
   # 2019-02-07T02:53:09.524358+00:00 app[web.1]: 	/app/vendor/bundle/ruby/2.4.0/gems/intercom-3.7.3/lib/intercom/request.rb:170:in `raise_application_errors_on_failure'
 
