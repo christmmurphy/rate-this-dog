@@ -6,7 +6,6 @@ The rating will be posted on to the User's profile page in Intercom.
 
 This is designed as a sample app for building Intercom Messenger apps in Ruby. The code is commented and includes links to some useful tools for manipulating the required json.
 
-Check it out in the messenger [here](https://intercomcstest.wpengine.com/?page_id=144). First call might fail as Heroku Dynos spin up.
 
 ## In Use
 #### Messenger:
